@@ -55,9 +55,6 @@ class PublishingManager implements IPublishingManager {
   /// Raised when a message has been recieved by the client and the relevant QOS handshake is complete.
   MessageReceived publishEvent;
 
-  /// Publish identifier key
-  static const String publishIdentifierkey = "Publish";
-
   /// Initializes a new instance of the PublishingManager class.
   PublishingManager(IMqttConnectionHandler connectionHandler) {
     this.connectionHandler = connectionHandler;
@@ -81,8 +78,7 @@ class PublishingManager implements IPublishingManager {
   int publish(
       PublicationTopic topic, MqttQos qualityOfService, typed.Uint8Buffer data,
       [bool retain = false]) {
-    final int msgId = messageIdentifierDispenser
-        .getNextMessageIdentifier(publishIdentifierkey);
+    final int msgId = messageIdentifierDispenser.getNextMessageIdentifier();
     final MqttPublishMessage msg = MqttPublishMessage()
         .toTopic(topic.toString())
         .withMessageIdentifier(msgId)

@@ -39,20 +39,21 @@ class MqttMessage {
       // to build a full MqttMessage.
       header = MqttHeader.fromByteBuffer(messageStream);
       //expected position after reading payload
-      int expectedPos = messageStream.position + header.messageSize;
+      final int expectedPos = messageStream.position + header.messageSize;
 
-      if(messageStream.availableBytes < header.messageSize){
+      if (messageStream.availableBytes < header.messageSize) {
         messageStream.reset();
-        return null;
+        throw InvalidMessageException(
+            "Available bytes is less than the message size");
       }
       final MqttMessage message =
           MqttMessageFactory.getMessage(header, messageStream);
 
-      if(messageStream.position < expectedPos)
+      if (messageStream.position < expectedPos)
         messageStream.skipBytes(expectedPos - messageStream.position);
 
       return message;
-    } catch (InvalidHeaderException) {
+    } catch (e) {
       throw InvalidMessageException(
           "The data provided in the message stream was not a valid MQTT Message");
     }
